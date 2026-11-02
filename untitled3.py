@@ -58,6 +58,11 @@ plt.title('Starbucks Drinks Distribution by Calorie Content', fontsize=14, fontw
 plt.tight_layout()
 plt.show()
 
+from google.colab import files
+
+# Download only the trained model file
+files.download('starbucks_decision_tree_model.joblib')
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -152,19 +157,20 @@ print(f"Model successfully saved as: {model_filename}")
 This cell will automatically generate the `requirements.txt` and `app.py` files in your environment so you can download and deploy them.
 """
 
-# 1. Create the requirements.txt file including matplotlib to avoid import errors
+# 1. Create the requirements.txt file including matplotlib and seaborn to avoid import errors
 requirements_content = """streamlit
 pandas
 numpy
 scikit-learn
 joblib
 matplotlib
+seaborn
 """
 
 with open('requirements.txt', 'w') as f:
     f.write(requirements_content.strip())
 
-print("requirements.txt successfully created with matplotlib!")
+print("requirements.txt successfully updated with seaborn!")
 
 # 2. Create the app.py Streamlit file
 app_code = """
