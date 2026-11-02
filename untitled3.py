@@ -147,3 +147,91 @@ import joblib
 model_filename = 'starbucks_decision_tree_model.joblib'
 joblib.dump(clf, model_filename)
 print(f"Model successfully saved as: {model_filename}")
+
+"""### Streamlit Deployment Files Creation
+This cell will automatically generate the `requirements.txt` and `app.py` files in your environment so you can download and deploy them.
+"""
+
+# 1. Create the requirements.txt file including matplotlib to avoid import errors
+requirements_content = """streamlit
+pandas
+numpy
+scikit-learn
+joblib
+matplotlib
+"""
+
+with open('requirements.txt', 'w') as f:
+    f.write(requirements_content.strip())
+
+print("requirements.txt successfully created with matplotlib!")
+
+# 2. Create the app.py Streamlit file
+app_code = """
+import streamlit as st
+import pandas as pd
+import numpy as np
+import joblib
+
+# Set page configuration
+st.set_page_config(page_title="Starbucks Calorie Predictor", page_icon="☕", layout="centered")
+
+st.title("☕ Starbucks Drink Calorie Predictor")
+st.write("Predict whether your favorite Starbucks drink is **High Calorie (>150 kcal)** or **Low/Med Calorie (<=150 kcal)** based on its nutritional values.")
+
+# Load the saved model
+@st.cache_resource
+def load_model():
+    return joblib.load('starbucks_decision_tree_model.joblib')
+
+try:
+    model = load_model()
+    st.success("Model loaded successfully!")
+except Exception as e:
+    st.error(f"Error loading the model. Please ensure 'starbucks_decision_tree_model.joblib' is in the same directory. Details: {e}")
+
+# Create Input form for user
+st.subheader("Enter Nutrition Details:")
+
+fat = st.slider("Fat (g)", min_value=0.0, max_value=30.0, value=2.0, step=0.5)
+carb = st.slider("Carbohydrates (g)", min_value=0.0, max_value=100.0, value=25.0, step=1.0)
+protein = st.slider("Protein (g)", min_value=0.0, max_value=30.0, value=4.0, step=0.5)
+
+# Prediction logic
+if st.button("Predict Calorie Category", type="primary"):
+    # Prepare the input data matching the feature order: ['Fat (g)', 'Carb. (g)', 'Protein']
+    input_data = pd.DataFrame([[fat, carb, protein]], columns=['Fat (g)', 'Carb. (g)', 'Protein'])
+
+    # Make prediction
+    prediction = model.predict(input_data)[0]
+    probabilities = model.predict_proba(input_data)[0]
+
+    st.markdown("--- ")
+    if prediction == 1:
+        st.error(f"🚨 **Prediction: High Calorie (>150 Calories)**")
+        st.write(f"Confidence: {probabilities[1]*100:.1f}%")
+    else:
+        st.success(f"✅ **Prediction: Low/Med Calorie (<=150 Calories)**")
+        st.write(f"Confidence: {probabilities[0]*100:.1f}%")
+"""
+
+with open('app.py', 'w') as f:
+    f.write(app_code.strip())
+
+print("app.py successfully created!")
+
+from google.colab import files
+
+# Download the three required files for Streamlit deployment
+files.download('starbucks_decision_tree_model.joblib')
+files.download('app.py')
+files.download('requirements.txt')
+
+"""### How to deploy on Streamlit Community Cloud:
+1. Download these 3 files from the Colab left sidebar folder icon:
+   - `starbucks_decision_tree_model.joblib`
+   - `requirements.txt`
+   - `app.py`
+2. Upload them to a new GitHub repository.
+3. Go to [share.streamlit.io](https://share.streamlit.io/), link your GitHub, and deploy!
+"""
