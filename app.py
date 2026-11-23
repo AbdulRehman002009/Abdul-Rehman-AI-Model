@@ -4,12 +4,18 @@ import joblib
 
 st.set_page_config(page_title="Starbucks Calorie Predictor", page_icon="☕", layout="centered")
 
+# --- Session State for Example Buttons ---
+if 'fat' not in st.session_state:
+    st.session_state.fat = 2.0
+if 'carb' not in st.session_state:
+    st.session_state.carb = 25.0
+if 'protein' not in st.session_state:
+    st.session_state.protein = 4.0
+
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;} footer {visibility: hidden;}
     .block-container { padding-top: 1.5rem !important; max-width: 700px !important; }
-
-    /* --- PRO LOGO - Starbucks Style --- */
     .logo-wrap { text-align: center; margin-bottom: 8px; }
     .logo-circle {
         width: 84px; height: 84px; background: #00704A;
@@ -21,12 +27,8 @@ st.markdown("""
     .logo-s { color: white; font-size: 38px; font-weight: 800; line-height: 1; font-family: Georgia, serif; }
     .logo-star { color: white; font-size: 11px; letter-spacing: 4px; margin-top: 2px; }
     .logo-text { font-size: 11px; font-weight: 800; letter-spacing: 3px; color: #00704A; margin-top: 10px; }
-
-    /* --- TITLE --- */
     .main-title { text-align: center; font-size: 32px; font-weight: 800; color: #111827; line-height: 1.15; margin: 12px 0 6px 0; }
     .main-sub { text-align: center; color: #6B7280; font-size: 15px; line-height: 1.5; }
-
-    /* --- BUTTON --- */
     div.stButton > button {
         width: 100% !important; border-radius: 12px !important;
         padding: 15px !important; font-weight: 700 !important; font-size: 16px !important;
@@ -34,30 +36,18 @@ st.markdown("""
         box-shadow: 0 6px 18px rgba(0,112,74,0.25) !important;
     }
     div.stButton > button:hover { background: #005A3C !important; }
-    div.stButton > button:active, div.stButton > button:focus {
-        background: #111827 !important; color: white !important;
-        box-shadow: none !important; outline: none !important;
-    }
-
-    /* --- SLIDER - Clean Black / Grey, Green nahi hoga --- */
     div[data-testid="stSlider"] > div > div > div > div { background: #E5E7EB !important; }
     div[data-testid="stSlider"] [role="slider"] {
-        background: #111827 !important;
-        border: 2px solid white !important;
+        background: #111827 !important; border: 2px solid white !important;
         box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
         width: 20px !important; height: 20px !important;
     }
-    div[data-testid="stSlider"] [role="slider"]:focus {
-        box-shadow: 0 0 0 3px rgba(0,0,0,0.10) !important;
-    }
-
     .label-box { background: #F9FAFB; border: 1px solid #EDEDED; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; }
     .label-box b { font-size: 14px; }
     .label-box span { font-size: 12px; color: #6B7280; }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- LOGO + TITLE ----------
 st.markdown("""
 <div class="logo-wrap">
     <div class="logo-circle">
@@ -80,19 +70,44 @@ def load_model():
 
 model = load_model()
 
+# ---------- EXAMPLE BUTTONS ----------
+st.markdown("### ⚡ Try Example Drinks")
+st.caption("One click - values will set automatically")
+e1, e2, e3 = st.columns(3)
+with e1:
+    if st.button("☕ Black Coffee"):
+        st.session_state.fat = 0.0
+        st.session_state.carb = 2.0
+        st.session_state.protein = 1.0
+        st.rerun()
+with e2:
+    if st.button("🥛 Skinny Latte"):
+        st.session_state.fat = 1.0
+        st.session_state.carb = 18.0
+        st.session_state.protein = 10.0
+        st.rerun()
+with e3:
+    if st.button("🍫 Frappuccino"):
+        st.session_state.fat = 12.0
+        st.session_state.carb = 65.0
+        st.session_state.protein = 5.0
+        st.rerun()
+
+st.write("")
+
 # ---------- BODY ----------
 with st.container(border=True):
     st.markdown("### 🥤 Nutrition Details")
     st.caption("Select values from your drink's nutrition label.")
 
     st.markdown('<div class="label-box"><b>🧈 Fat (g)</b><br><span>Fat makes drinks creamy but adds most calories — 1g Fat = 9 kcal</span></div>', unsafe_allow_html=True)
-    fat = st.slider("Fat (g)", 0.0, 30.0, 2.0, 0.5, label_visibility="collapsed")
+    fat = st.slider("Fat (g)", 0.0, 30.0, key="fat", label_visibility="collapsed")
 
     st.markdown('<div class="label-box"><b>🍞 Carbohydrates (g)</b><br><span>Sugar & syrups come here — 1g Carb = 4 kcal</span></div>', unsafe_allow_html=True)
-    carb = st.slider("Carbohydrates (g)", 0.0, 100.0, 25.0, 1.0, label_visibility="collapsed")
+    carb = st.slider("Carbohydrates (g)", 0.0, 100.0, key="carb", label_visibility="collapsed")
 
     st.markdown('<div class="label-box"><b>🥛 Protein (g)</b><br><span>Comes from milk — 1g Protein = 4 kcal</span></div>', unsafe_allow_html=True)
-    protein = st.slider("Protein (g)", 0.0, 30.0, 4.0, 0.5, label_visibility="collapsed")
+    protein = st.slider("Protein (g)", 0.0, 30.0, key="protein", label_visibility="collapsed")
 
     est = fat*9 + carb*4 + protein*4
     st.divider()
@@ -101,6 +116,13 @@ with st.container(border=True):
     c2.metric("Carbs", f"{carb}g")
     c3.metric("Protein", f"{protein}g")
     c4.metric("Est. Kcal", f"{est:.0f}")
+
+    # Reset Button
+    if st.button("🔄 Reset All"):
+        st.session_state.fat = 2.0
+        st.session_state.carb = 25.0
+        st.session_state.protein = 4.0
+        st.rerun()
 
 st.write("")
 
