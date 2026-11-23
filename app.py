@@ -69,68 +69,65 @@ def load_model():
 
 model = load_model()
 
-# ---------- EXAMPLE BUTTONS ----------
-st.markdown("### ⚡ Try Example Drinks")
-st.caption("One click - values will set automatically")
-e1, e2, e3 = st.columns(3)
-with e1:
-    if st.button("☕ Black Coffee"):
-        st.session_state.fat = 0.0; st.session_state.carb = 2.0; st.session_state.protein = 1.0; st.rerun()
-with e2:
-    if st.button("🥛 Skinny Latte"):
-        st.session_state.fat = 1.0; st.session_state.carb = 18.0; st.session_state.protein = 10.0; st.rerun()
-with e3:
-    if st.button("🍫 Frappuccino"):
-        st.session_state.fat = 12.0; st.session_state.carb = 65.0; st.session_state.protein = 5.0; st.rerun()
+# ---------- TABS - MENU AB UPAR HAI ----------
+tab1, tab2 = st.tabs(["🔮 Predict Calories", "📖 Starbucks Menu"])
 
-st.write("")
-
-# ---------- BODY ----------
-with st.container(border=True):
-    st.markdown("### 🥤 Nutrition Details")
-    st.caption("Select values from your drink's nutrition label.")
-    st.markdown('<div class="label-box"><b>🧈 Fat (g)</b><br><span>Fat makes drinks creamy but adds most calories — 1g Fat = 9 kcal</span></div>', unsafe_allow_html=True)
-    fat = st.slider("Fat (g)", 0.0, 30.0, key="fat", label_visibility="collapsed")
-    st.markdown('<div class="label-box"><b>🍞 Carbohydrates (g)</b><br><span>Sugar & syrups come here — 1g Carb = 4 kcal</span></div>', unsafe_allow_html=True)
-    carb = st.slider("Carbohydrates (g)", 0.0, 100.0, key="carb", label_visibility="collapsed")
-    st.markdown('<div class="label-box"><b>🥛 Protein (g)</b><br><span>Comes from milk — 1g Protein = 4 kcal</span></div>', unsafe_allow_html=True)
-    protein = st.slider("Protein (g)", 0.0, 30.0, key="protein", label_visibility="collapsed")
-    est = fat*9 + carb*4 + protein*4
-    st.divider()
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Fat", f"{fat}g")
-    c2.metric("Carbs", f"{carb}g")
-    c3.metric("Protein", f"{protein}g")
-    c4.metric("Est. Kcal", f"{est:.0f}")
-    if st.button("🔄 Reset All"):
-        st.session_state.fat = 2.0; st.session_state.carb = 25.0; st.session_state.protein = 4.0; st.rerun()
-
-st.write("")
-
-if st.button("Predict Calorie Category  →"):
-    data = pd.DataFrame([[fat, carb, protein]], columns=['Fat (g)', 'Carb. (g)', 'Protein'])
-    pred = model.predict(data)[0]
-    proba = model.predict_proba(data)[0]
-    conf = max(proba)*100
+with tab1:
+    st.markdown("### ⚡ Try Example Drinks")
+    st.caption("One click - values will set automatically")
+    e1, e2, e3 = st.columns(3)
+    with e1:
+        if st.button("☕ Black Coffee"):
+            st.session_state.fat = 0.0; st.session_state.carb = 2.0; st.session_state.protein = 1.0; st.rerun()
+    with e2:
+        if st.button("🥛 Skinny Latte"):
+            st.session_state.fat = 1.0; st.session_state.carb = 18.0; st.session_state.protein = 10.0; st.rerun()
+    with e3:
+        if st.button("🍫 Frappuccino"):
+            st.session_state.fat = 12.0; st.session_state.carb = 65.0; st.session_state.protein = 5.0; st.rerun()
     st.write("")
-    if pred == 1:
-        with st.container(border=True):
-            st.markdown('<h3 style="color:#DC2626; margin:0;">🚨 High Calorie Drink</h3>', unsafe_allow_html=True)
-            st.write(f"Your drink has **more than 150 Calories**.")
-            st.write(f"Model Confidence: **{conf:.1f}%**")
-            st.info("💡 Tip: Try a small size, skim milk or less syrup.")
-    else:
-        with st.container(border=True):
-            st.markdown('<h3 style="color:#16A34A; margin:0;">✅ Low / Medium Calorie Drink</h3>', unsafe_allow_html=True)
-            st.write(f"Your drink has **150 Calories or less**.")
-            st.write(f"Model Confidence: **{conf:.1f}%**")
-            st.info("💡 Great choice! This is in a moderate calorie range.")
-    st.progress(int(conf))
+    with st.container(border=True):
+        st.markdown("### 🥤 Nutrition Details")
+        st.caption("Select values from your drink's nutrition label.")
+        st.markdown('<div class="label-box"><b>🧈 Fat (g)</b><br><span>Fat makes drinks creamy but adds most calories — 1g Fat = 9 kcal</span></div>', unsafe_allow_html=True)
+        fat = st.slider("Fat (g)", 0.0, 30.0, key="fat", label_visibility="collapsed")
+        st.markdown('<div class="label-box"><b>🍞 Carbohydrates (g)</b><br><span>Sugar & syrups come here — 1g Carb = 4 kcal</span></div>', unsafe_allow_html=True)
+        carb = st.slider("Carbohydrates (g)", 0.0, 100.0, key="carb", label_visibility="collapsed")
+        st.markdown('<div class="label-box"><b>🥛 Protein (g)</b><br><span>Comes from milk — 1g Protein = 4 kcal</span></div>', unsafe_allow_html=True)
+        protein = st.slider("Protein (g)", 0.0, 30.0, key="protein", label_visibility="collapsed")
+        est = fat*9 + carb*4 + protein*4
+        st.divider()
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Fat", f"{fat}g")
+        c2.metric("Carbs", f"{carb}g")
+        c3.metric("Protein", f"{protein}g")
+        c4.metric("Est. Kcal", f"{est:.0f}")
+        if st.button("🔄 Reset All"):
+            st.session_state.fat = 2.0; st.session_state.carb = 25.0; st.session_state.protein = 4.0; st.rerun()
+    st.write("")
+    if st.button("Predict Calorie Category  →"):
+        data = pd.DataFrame([[fat, carb, protein]], columns=['Fat (g)', 'Carb. (g)', 'Protein'])
+        pred = model.predict(data)[0]
+        proba = model.predict_proba(data)[0]
+        conf = max(proba)*100
+        st.write("")
+        if pred == 1:
+            with st.container(border=True):
+                st.markdown('<h3 style="color:#DC2626; margin:0;">🚨 High Calorie Drink</h3>', unsafe_allow_html=True)
+                st.write(f"Your drink has **more than 150 Calories**.")
+                st.write(f"Model Confidence: **{conf:.1f}%**")
+                st.info("💡 Tip: Try a small size, skim milk or less syrup.")
+        else:
+            with st.container(border=True):
+                st.markdown('<h3 style="color:#16A34A; margin:0;">✅ Low / Medium Calorie Drink</h3>', unsafe_allow_html=True)
+                st.write(f"Your drink has **150 Calories or less**.")
+                st.write(f"Model Confidence: **{conf:.1f}%**")
+                st.info("💡 Great choice! This is in a moderate calorie range.")
+        st.progress(int(conf))
 
-# ---------- NEW: STARBUCKS MENU REFERENCE ----------
-st.write("")
-with st.expander("📖 Starbucks Menu Reference - Click to see all drinks", expanded=False):
-    st.caption("If you don't know a drink, check here. These are real Starbucks drinks.")
+with tab2:
+    st.markdown("### 📖 Starbucks Menu Reference")
+    st.caption("Don't know a drink? Check here first, then go to Predict tab.")
     menu = pd.DataFrame([
         ["☕ Black Coffee", "Just coffee, no milk/sugar", 5, "Low"],
         ["🍵 Green Tea Latte", "Green tea + steamed milk", 120, "Low"],
@@ -144,7 +141,7 @@ with st.expander("📖 Starbucks Menu Reference - Click to see all drinks", expa
         ["🥤 Cold Brew", "Slow-steeped cold coffee", 10, "Low"],
     ], columns=["Drink Name", "What is it?", "Approx. Calories", "Category"])
     st.dataframe(menu, use_container_width=True, hide_index=True)
-    st.markdown("**💡 Tip for Viva:** Sir, user ko drink ka naam nahi pata to wo yahan se dekh kar upar values daal sakta hai.")
+    st.info("💡 Tip: Menu se drink dekh kar, Predict wale tab me uski values daal kar check karo.")
 
 st.markdown("---")
 st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:12px;">Built with Python • Streamlit • Decision Tree | Final Year Project</p>', unsafe_allow_html=True)
