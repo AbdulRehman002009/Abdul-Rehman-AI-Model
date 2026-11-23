@@ -22,7 +22,7 @@ st.markdown("""
     .logo-star { color: white; font-size: 11px; letter-spacing: 4px; margin-top: 2px; }
     .logo-text { font-size: 11px; font-weight: 800; letter-spacing: 3px; color: #00704A; margin-top: 10px; }
 
-    /* --- TITLE - Cancer wale jaisa --- */
+    /* --- TITLE --- */
     .main-title { text-align: center; font-size: 32px; font-weight: 800; color: #111827; line-height: 1.15; margin: 12px 0 6px 0; }
     .main-sub { text-align: center; color: #6B7280; font-size: 15px; line-height: 1.5; }
 
@@ -34,8 +34,23 @@ st.markdown("""
         box-shadow: 0 6px 18px rgba(0,112,74,0.25) !important;
     }
     div.stButton > button:hover { background: #005A3C !important; }
-    /* Slider Green */
-    div[data-testid="stSlider"] > div > div > div > div { background: #00704A !important; }
+    div.stButton > button:active, div.stButton > button:focus {
+        background: #111827 !important; color: white !important;
+        box-shadow: none !important; outline: none !important;
+    }
+
+    /* --- SLIDER - Clean Black / Grey, Green nahi hoga --- */
+    div[data-testid="stSlider"] > div > div > div > div { background: #E5E7EB !important; }
+    div[data-testid="stSlider"] [role="slider"] {
+        background: #111827 !important;
+        border: 2px solid white !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.25) !important;
+        width: 20px !important; height: 20px !important;
+    }
+    div[data-testid="stSlider"] [role="slider"]:focus {
+        box-shadow: 0 0 0 3px rgba(0,0,0,0.10) !important;
+    }
+
     .label-box { background: #F9FAFB; border: 1px solid #EDEDED; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; }
     .label-box b { font-size: 14px; }
     .label-box span { font-size: 12px; color: #6B7280; }
