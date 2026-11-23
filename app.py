@@ -4,6 +4,17 @@ import joblib
 
 st.set_page_config(page_title="Starbucks Calorie Predictor", page_icon="☕", layout="centered")
 
+# ---------- FIX: Callback Functions - Isko upar hi rakhna hai ----------
+def set_drink(f, c, p):
+    st.session_state.fat = f
+    st.session_state.carb = c
+    st.session_state.protein = p
+
+def reset_all():
+    st.session_state.fat = 2.0
+    st.session_state.carb = 25.0
+    st.session_state.protein = 4.0
+
 if 'fat' not in st.session_state:
     st.session_state.fat = 2.0
 if 'carb' not in st.session_state:
@@ -69,7 +80,6 @@ def load_model():
 
 model = load_model()
 
-# ---------- TABS - MENU AB UPAR HAI ----------
 tab1, tab2 = st.tabs(["🔮 Predict Calories", "📖 Starbucks Menu"])
 
 with tab1:
@@ -77,14 +87,11 @@ with tab1:
     st.caption("One click - values will set automatically")
     e1, e2, e3 = st.columns(3)
     with e1:
-        if st.button("☕ Black Coffee"):
-            st.session_state.fat = 0.0; st.session_state.carb = 2.0; st.session_state.protein = 1.0; st.rerun()
+        st.button("☕ Black Coffee", on_click=set_drink, args=(0.0, 2.0, 1.0))
     with e2:
-        if st.button("🥛 Skinny Latte"):
-            st.session_state.fat = 1.0; st.session_state.carb = 18.0; st.session_state.protein = 10.0; st.rerun()
+        st.button("🥛 Skinny Latte", on_click=set_drink, args=(1.0, 18.0, 10.0))
     with e3:
-        if st.button("🍫 Frappuccino"):
-            st.session_state.fat = 12.0; st.session_state.carb = 65.0; st.session_state.protein = 5.0; st.rerun()
+        st.button("🍫 Frappuccino", on_click=set_drink, args=(12.0, 65.0, 5.0))
     st.write("")
     with st.container(border=True):
         st.markdown("### 🥤 Nutrition Details")
@@ -102,8 +109,9 @@ with tab1:
         c2.metric("Carbs", f"{carb}g")
         c3.metric("Protein", f"{protein}g")
         c4.metric("Est. Kcal", f"{est:.0f}")
-        if st.button("🔄 Reset All"):
-            st.session_state.fat = 2.0; st.session_state.carb = 25.0; st.session_state.protein = 4.0; st.rerun()
+        # FIXED RESET BUTTON
+        st.button("🔄 Reset All", on_click=reset_all)
+
     st.write("")
     if st.button("Predict Calorie Category  →"):
         data = pd.DataFrame([[fat, carb, protein]], columns=['Fat (g)', 'Carb. (g)', 'Protein'])
