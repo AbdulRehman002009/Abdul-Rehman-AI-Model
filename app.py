@@ -4,7 +4,7 @@ import joblib
 
 st.set_page_config(page_title="Starbucks Calorie Predictor", page_icon="☕", layout="centered")
 
-# ---------- FIX: Callback Functions - Isko upar hi rakhna hai ----------
+# ---------- FIX: Callback Functions ----------
 def set_drink(f, c, p):
     st.session_state.fat = f
     st.session_state.carb = c
@@ -25,17 +25,18 @@ if 'protein' not in st.session_state:
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;} footer {visibility: hidden;}
-    .block-container { padding-top: 1.5rem !important; max-width: 700px !important; }
-    .logo-wrap { text-align: center; margin-bottom: 8px; }
+    .block-container { padding-top: 2rem !important; max-width: 700px !important; }
+    .logo-wrap { text-align: center; margin-bottom: 8px; padding-top: 15px; }
     .logo-circle {
-        width: 84px; height: 84px; background: #00704A;
-        border-radius: 50%; display: flex; flex-direction: column;
+        width: 90px; height: 90px; background: #00704A;
+        border-radius: 50%; display: flex;
         align-items: center; justify-content: center;
-        margin: 0 auto; border: 3px solid #FFFFFF;
+        margin: 0 auto;
+        border: 3px solid #FFFFFF;
         box-shadow: 0 0 0 2px #00704A, 0 10px 22px rgba(0,112,74,0.30);
+        overflow: hidden;
     }
-    .logo-s { color: white; font-size: 38px; font-weight: 800; line-height: 1; font-family: Georgia, serif; }
-    .logo-star { color: white; font-size: 11px; letter-spacing: 4px; margin-top: 2px; }
+    .logo-s { color: white; font-size: 52px; font-weight: 800; line-height: 1; font-family: Georgia, serif; margin-top: -4px; }
     .logo-text { font-size: 11px; font-weight: 800; letter-spacing: 3px; color: #00704A; margin-top: 10px; }
     .main-title { text-align: center; font-size: 32px; font-weight: 800; color: #111827; line-height: 1.15; margin: 12px 0 6px 0; }
     .main-sub { text-align: center; color: #6B7280; font-size: 15px; line-height: 1.5; }
@@ -61,9 +62,7 @@ st.markdown("""
 st.markdown("""
 <div class="logo-wrap">
     <div class="logo-circle">
-        <div class="logo-star">★ ★ ★</div>
         <div class="logo-s">S</div>
-        <div class="logo-star">★ ★ ★</div>
     </div>
     <div class="logo-text">STARBUCKS</div>
 </div>
@@ -109,9 +108,7 @@ with tab1:
         c2.metric("Carbs", f"{carb}g")
         c3.metric("Protein", f"{protein}g")
         c4.metric("Est. Kcal", f"{est:.0f}")
-        # FIXED RESET BUTTON
         st.button("🔄 Reset All", on_click=reset_all)
-
     st.write("")
     if st.button("Predict Calorie Category  →"):
         data = pd.DataFrame([[fat, carb, protein]], columns=['Fat (g)', 'Carb. (g)', 'Protein'])
